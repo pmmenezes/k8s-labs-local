@@ -40,7 +40,6 @@ containerd config default > /etc/containerd/config.toml
 # Instalação kubeadm Kubelete kubectl 
 curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
 echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin  curl apt-transport-https -y
 
 apt install -y  kubelet kubectl kubeadm
 apt-mark hold kubelet kubeadm kubectl
