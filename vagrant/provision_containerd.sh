@@ -41,7 +41,8 @@ containerd config default > /etc/containerd/config.toml
 curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
 echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
-apt install -y  kubelet kubectl kubeadm
+
+apt update && apt install -y  kubelet kubectl kubeadm
 apt-mark hold kubelet kubeadm kubectl
 systemctl enable kubelet
 
@@ -50,3 +51,10 @@ sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.to
 
 systemctl restart containerd
 
+# Kubectl autocomplete
+source <(kubectl completion bash) 
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+
+# Kubectl alias
+alias k=kubectl
+complete -o default -F __start_kubectl k
