@@ -6,6 +6,10 @@ nodes = {
   "worker01"  => {"memory" => "2048" , "cpu" => "1" , "ip"=> "101" , "image" => "ubuntu/jammy64"},
   "worker02"  => {"memory" => "2048" , "cpu" => "1" , "ip"=> "102" , "image" => "ubuntu/jammy64"}
 }
+runc = "containerd"
+
+#runc = "crio"
+
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -38,7 +42,7 @@ nodes.each do | name, conf |
       echo '192.168.56.102 worker02.k8s.lab' >> /etc/hosts
       apt update &&  apt upgrade -y     
     SHELL
-    node.vm.provision "shell", path: "provision.sh"
+    node.vm.provision "shell", path: "provision_#{runc}.sh"
     node.vm.provision "shell", inline: "hostnamectl set-hostname #{name}.k8s.lab"
     end
   end
