@@ -1,0 +1,45 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+nodes = {
+  "controlplane" => {"memory" => "2048" , "cpu" => "2" , "ip"=> "10" , "image" => "ubuntu/jammy64"},
+  "worker01"  => {"memory" => "2048" , "cpu" => "1" , "ip"=> "101" , "image" => "ubuntu/jammy64"},
+  "worker02"  => {"memory" => "2048" , "cpu" => "1" , "ip"=> "102" , "image" => "ubuntu/jammy64"}
+}
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+nodes.each do | name, conf |
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  config.vm.define "#{name}" do | node | 
+    node.vm.box = "#{conf["image"]}"
+    node.vm.hostname = "#{name}.k8s.lab"
+    node.vm.network "private_network", ip: "192.168.56.#{conf["ip"]}"
+    node.vm.provider "virtualbox" do | vb |
+      vb.name =  "#{name}"
+      vb.memory = conf["memory"]
+      vb.cpus = conf["cpu"]
+      vb.customize ["modifyvm", :id, "--groups", "/k8s-lab"]
+    end
+    node.vm.synced_folder "./data", "/home/vagrant/data"
+    node.vm.provision "shell", inline: <<-SHELL
+      HOSTS=$(head -n7 /etc/hosts)
+      echo -e "$HOSTS" > /etc/hosts
+      echo '192.168.56.10 controlplane.k8s.lab' >> /etc/hosts
+      echo '192.168.56.101 worker01.k8s.lab' >> /etc/hosts
+      echo '192.168.56.102 worker02.k8s.lab' >> /etc/hosts
+      apt update &&  apt upgrade -y     
+    SHELL
+    node.vm.provision "shell", path: "provision.sh"
+    node.vm.provision "shell", inline: "hostnamectl set-hostname #{name}.k8s.lab"
+    end
+  end
+end
