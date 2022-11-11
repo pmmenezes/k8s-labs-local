@@ -51,10 +51,14 @@ sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.to
 
 systemctl restart containerd
 
+
+#https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 # Kubectl autocomplete
-source <(kubectl completion bash) 
-echo "source <(kubectl completion bash)" >> ~/.bashrc
+su -c 'source <(kubectl completion bash)' vagrant
+su -c 'echo "source <(kubectl completion bash)" >> /home/vagrant/.bashrc' vagrant
 
 # Kubectl alias
-alias k=kubectl
-complete -o default -F __start_kubectl k
+su -c 'echo alias k=kubectl >> /home/vagrant/.bashrc' vagrant
+su -c 'echo complete -o default -F __start_kubectl k >> /home/vagrant/.bashrc' vagrant
+
+su -c "source /home/vagrant/.bashrc" vagrant

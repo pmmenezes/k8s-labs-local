@@ -36,16 +36,15 @@ mkdir -p /usr/share/keyrings
 curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/Release.key | gpg --dearmor -o /usr/share/keyrings/libcontainers-archive-keyring.gpg
 curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$VERSION/$OS/Release.key | gpg --dearmor -o /usr/share/keyrings/libcontainers-crio-archive-keyring.gpg
 
-apt-get update
-apt-get install cri-o cri-o-runc
+
 # Install CRI-O
-sudo apt update
-sudo apt install cri-o cri-o-runc
+apt update
+apt install cri-o cri-o-runc -y
 
 # Start and enable Service
-sudo systemctl daemon-reload
-sudo systemctl restart crio
-sudo systemctl enable crio
+systemctl daemon-reload
+systemctl restart crio
+systemctl enable crio
 
 
 
@@ -58,10 +57,13 @@ apt update && apt install -y  kubelet kubectl kubeadm
 apt-mark hold kubelet kubeadm kubectl
 systemctl enable kubelet
 
+#https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 # Kubectl autocomplete
-source <(kubectl completion bash) 
-echo "source <(kubectl completion bash)" >> ~/.bashrc
+su -c 'source <(kubectl completion bash)' vagrant
+su -c 'echo "source <(kubectl completion bash)" >> /home/vagrant/.bashrc' vagrant
 
 # Kubectl alias
-alias k=kubectl
-complete -o default -F __start_kubectl k
+su -c 'echo alias k=kubectl >> /home/vagrant/.bashrc' vagrant
+su -c 'echo complete -o default -F __start_kubectl k >> /home/vagrant/.bashrc' vagrant
+
+su -c "source /home/vagrant/.bashrc" vagrant
