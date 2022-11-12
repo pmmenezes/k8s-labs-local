@@ -6,9 +6,9 @@ nodes = {
   "worker01"  => {"memory" => "2048" , "cpu" => "1" , "ip"=> "101" , "image" => "ubuntu/jammy64"},
   "worker02"  => {"memory" => "2048" , "cpu" => "1" , "ip"=> "102" , "image" => "ubuntu/jammy64"}
 }
-#runc = "containerd"
 
-runc = "crio"
+#runc = "containerd"
+#runc = "crio"
 
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
@@ -33,7 +33,7 @@ nodes.each do | name, conf |
       vb.cpus = conf["cpu"]
       vb.customize ["modifyvm", :id, "--groups", "/k8s-lab"]
     end
-    node.vm.synced_folder "./data", "/home/vagrant/data"
+    node.vm.synced_folder "data", "/home/vagrant/data"
     node.vm.provision "shell", inline: <<-SHELL
       HOSTS=$(head -n7 /etc/hosts)
       echo -e "$HOSTS" > /etc/hosts
