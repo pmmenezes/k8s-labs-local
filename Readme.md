@@ -13,8 +13,7 @@ vagrant ssh controlplane
 ### Kubeadm com containerd
 Habilite o containerd no Vagrantfile
 
-sed -i 's/#runc = "containerd"/runc = "containerd"/' Vagrantfile
-sed -i 's/runc = "crio"/#runc = "crio"/' Vagrantfile
+> `sed -i 's/#runc = "containerd"/runc = "containerd"/' Vagrantfile  &&   sed -i 's/runc = "crio"/#runc = "crio"/' Vagrantfile `
 
 ```bash
 sudo kubeadm init --upload-certs --control-plane-endpoint=$(hostname) --apiserver-advertise-address $(hostname -i)  --cri-socket unix:///var/run/containerd/containerd.sock --pod-network-cidr 192.168.99.0/24
@@ -41,8 +40,7 @@ kubeadm join controlplane.k8s.lab:6443 --token <token> \
 
 Habilite o crio no Vagrantfile
 
-sed -i 's/runc = "containerd"/#runc = "containerd"/' Vagrantfile
-sed -i 's/#runc = "crio"/runc = "crio"/' Vagrantfile
+> `sed -i 's/runc = "containerd"/#runc = "containerd"/' Vagrantfile && sed -i 's/#runc = "crio"/runc = "crio"/' Vagrantfile `
 
 ```bash
 sudo kubeadm init --upload-certs --control-plane-endpoint=$(hostname) --apiserver-advertise-address $(hostname -i)  --cri-socket unix:///var/run/crio/crio.sock  --pod-network-cidr 192.168.99.0/24	
